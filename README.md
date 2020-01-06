@@ -15,15 +15,18 @@
 The *Marble It Up!* Level Creation Kit is a system that allows you to create and test new Marble It Up! levels. The kit comes in two parts: a Unity Package to help build .level files, and a Map Tester application to load and playtest your generated .level files.
 To get started creating custom *Marble It Up!* Levels you will need a few additional tools:
 
-* Unity Editor (2017.2.1 or newer)
-* Pro Builder Unity Asset (free) or other 3D Modeling software
+* Unity Editor (2019.1 or later)
+* Unity ProBuilder tool or other 3D modeling software 
 
-Unity is needed to import the *MIU_LevelCreationKit.unitypackage* and export Unity Scenes as .level files. [ProBuilder](https://assetstore.unity.com/packages/tools/modeling/probuilder-111418) or another 3D Modelling program is needed to create the actual map geometry and generate UV maps.
+Unity is needed to import the *MIU_LevelCreationKit.unitypackage* and export Unity Scenes as .level files. To create original level geometry and UV maps for its textures, you will need some kind of 3D modeling software. One convenient option is ProBuilder. It's free and fully integrated into the Unity editor. 
 
-In Unity 2018.1 and later, the latest version of ProBuilder can be installed from inside the editor.
+**As of version 1.21 of this kit, ProBuilder is required for the level exporter to function, regardless of whether you use it to create your level.**
+
+You'll want to create a new Unity project to set up the MIU Level Creation Kit. This can be done from Unity Hub or from Unity's *File* menu. Just use the "3D" template.
+
+The latest version of ProBuilder can be installed from inside the editor. (The asset store version, ProBuilder 2, is very old and has been replaced with the integrated version.)
 From the Unity menu bar, select *Window > Package Manager* and then find ProBuilder in the list and click Install.
-
-For Unity 2017.3 or older, you will have to use the older asset store version.
+While you're here, you may also want to install ProGrids to configure grid snapping resolution, which is very useful for building geometry and placing items.
 
 Once you have Unity and your model creation system of choice, you’re ready to start building!
 
@@ -32,21 +35,22 @@ Please also review the [Level Creation Kit EULA](https://github.com/MarbleItUp/M
 # **Importing the UnityPackage**
 
 Importing the Level Generation tools into Unity is easy!
+
 From the Unity menu bar select *Assets > Import Package > Custom Package...*
 
  ![image alt text](ReadmeImages/image_1.png)
 
-Then select *MIU_LevelCreationKit.unitypackage* which can be downloaded from this repository. Select Ok and wait for the package to complete importing.
+Then select *MIU_LevelCreationKit.unitypackage* which can be downloaded from this repository. Click *Import* and wait for the package to finish importing all the files.
 
-You should see a new option on the Unity menu bar called "Marble It Up".
+You should then see a new option on the Unity menu bar called "Marble It Up".
 
 Now let’s make a few adjustments to the project so that what you see in the editor is as close as possible to what you’ll see in the game.
-First, select Edit > Project Settings > Quality and adjust the settings to made this:
+First, select Edit > Project Settings > Quality and change the settings to these:
 
 ![image alt text](ReadmeImages/image_2.png)
 
 The most important part here is to Disable Shadows (as we’ll be baking lightmaps later) so you don’t see incorrect lighting information.
-Next go to Edit > Project Settings > Graphics, scroll down, and adjust settings as shown:
+Next, go to Edit > Project Settings > Graphics, scroll down, and adjust settings as shown:
 
 ![image alt text](ReadmeImages/image_3.png)
 
@@ -55,7 +59,7 @@ That’s it! You’re now ready to start making custom levels!
 
 # **Learning To Roll**
 
-Before we begin creating a new custom level, let’s take a look at the included demo scene of "Learning to Roll", which can be found in *Assets/MIU/Example*. In the Game and Scene windows you should see a familiar map!
+Before we begin creating a new custom level, let’s take a look at the included demo scene of "Learning to Roll", which can be found in *Assets/MIU/Example*. In the Game and Scene windows, you should see a familiar map!
 
 ![image alt text](ReadmeImages/image_4.png)
 
@@ -71,15 +75,15 @@ The final object is the Preview Camera which will provide the viewport in during
 <a name="firstlevel"/>
 # **Your First Custom Level**
 
-Now that we’ve checked out the example scene we can try making our own version of Learning to Roll. First we create a new scene by pressing Ctrl+N or selecting *File > New Scene*.
+Now that we’ve checked out the example scene we can try making our own version of Learning to Roll. First, we create a new scene by pressing Ctrl+N or selecting *File > New Scene*.
 
-You should now have a blank scene with a *Directional Light*, and a *Main Camera*. First we want to set up the base scene so it’s ready to build upon. To do this, we want to open up the *Level Kit Window* which can be done by selecting *Marble It Up > Level Kit Window*. This will open up a new Unity Panel that should have a single button: *Setup Lighting*. Pressing this should reward you with a change in Skybox and a modified Scene Hierarchy where the Directional Light has been renamed to "Sun" and been moved into the Static/Lighting group. You can read more about picking a skybox in the Skybox section of this document.
+You should now have a blank scene with a *Directional Light*, and a *Main Camera*. First, we want to set up the base scene so it’s ready to build upon. To do this, we want to open up the *Level Kit Window* which can be done by selecting *Marble It Up > Level Kit Window*. This will open up a new Unity Panel that should have a single button: *Setup Lighting*. Pressing this should reward you with a change in Skybox and a modified Scene Hierarchy where the Directional Light has been renamed to "Sun" and been moved into the Static/Lighting group. You can read more about picking a skybox in the Skybox section of this document.
 
 Let’s add the base Learning to Roll level mesh so we can get started with Static Meshes. In the Project Window, navigate to *Assets/MIU/Internal/Meshes* and drag the LearningToRoll mesh into the Scene Hierarchy. Your scene view should now look like this:
 
 ![image alt text](ReadmeImages/image_5.png)
 
-In the Scene Hierarchy open up the Learning to Roll object and you will find 6 objects that correspond to different sections of the level mesh. In the Inspector Window you should see a Mesh Renderer on each one of these objects.
+In the Scene Hierarchy open up the Learning to Roll object and you will find 6 objects that correspond to different sections of the level mesh. In the Inspector Window, you should see a Mesh Renderer on each one of these objects.
 
 Select **Cube (6)** and Open up the *Mesh Renderer* component by clicking on the arrow on the left side and you should see a list of Materials (open it up if closed by clicking on the arrow). You should see 3 Materials listed: *Tile01-AA*, *Fill01-C Local*, and *Edge C*. Material links are based on name, so these would work, but we have some sample materials to use that have actual graphics and are easier to work with.
 
@@ -91,11 +95,11 @@ Repeat that process for the remaining 5 objects in the LearningToRoll group and 
 
 ![image alt text](ReadmeImages/image_6.png)
 
-Now we have the visual meshes ready, but we need to make them physical! So, select all 6 objects inside the LearningToRoll object and press the Add Component button in the Inspector Window. Type in "*Mesh Collider*" and select that when it shows up. Then at the top right of the Inspector Window check the “*Static*” checkbox. This tells the Level Builder that the geometry won’t move and that it should treat it as collidable with the marble. Finally drag and drop the entire *LearningToRoll* object into the Static group in the Scene Hierarchy.
+Now we have the visual meshes ready, but we need to make them physical! So, select all 6 objects inside the LearningToRoll object and press the Add Component button in the Inspector Window. Type in "*Mesh Collider*" and select that when it shows up. Then at the top right of the Inspector Window check the “*Static*” checkbox. This tells the Level Builder that the geometry won’t move and that it should treat it as collidable with the marble. Finally, drag and drop the entire *LearningToRoll* object into the Static group in the Scene Hierarchy.
 
-Now, any level requires a **Start Pad**, **End Pad**, and **Level Bounds** ... so lets make them!
+Now, any level requires a **StartPad**, **EndPad**, **LevelBounds**, and **LevelTiming** ... so lets make them!
 
-Creating special gameplay items like Pads, Power-ups, Bumpers, etc is easy. Just open up the correct section in the *Level Kit Window* and click on button for the object you want to make. Let’s make a Start Pad, an End Pad, and the Level Bounds which are all under the *Core* section.
+Creating special gameplay items like Pads, Power-ups, Bumpers, etc is easy. Just open up the correct section in the *Level Kit Window* and click the button for the object you want to make. Let’s make a Start Pad, an End Pad, Level Bounds, and Level Timing, which are all under the *Core* section.
 
 Let’s move the Start and End pads into their correct locations at the start and end of the level by using the movement arrows in the Scene view. Make sure to turn on the icons in the Gizmos dropdown in the Scene View and increase the 3D Icon Size so that they are clearly visible.
 
@@ -103,17 +107,17 @@ Let’s move the Start and End pads into their correct locations at the start an
 
 ![image alt text](ReadmeImages/image_8.png)
 
-Once the Start and End pads are placed, lets adjust the Level Bounds so that it encompases the entire level. Select the LevelBounds object and adjust its position and Box Collider Size so that it fits nicely around the level.
+Once the Start and End pads are placed, let's adjust the Level Bounds so that it encompasses the entire level. You can click the "Recalculate Level Bounds" button in the level kit window to automatically position the bounds around the level, but it's sometimes necessary to expand them a bit, particularly in cases where the marble may fly high above a level. Select the LevelBounds object and adjust its position and Box Collider size as needed.
 
 Your resulting bounds should look something like this:
 
 ![image alt text](ReadmeImages/image_9.png)
 
-We’re almost ready to export the level, but lets add a rock and a bumper first.
+We’re almost ready to export the level, but let's add a rock and a bumper first.
 
 You can add a bumper the same way you added the Start Pad, which is in Gameplay section of the *Level Kit Window*, place it wherever you like on the level.
 
-Now let’s also create a Rock. There are a number of different customizable objects available to add into your levels, they can be found in the Prefabs folder ( *MIU/Prefabs* ). To use one, just drag it into the Scene View or the Hierarchy. Let’s bring out RockFormation1.
+Now let’s also create a Rock. There are a number of different customizable objects available to add to your levels, they can be found in the Prefabs folder ( *MIU/Prefabs* ). To use one, just drag it into the Scene View or the Hierarchy. Let’s bring out RockFormation1.
 
 The difference between objects we create from the Level Kit Window and objects from the Prefabs folder is that Created objects can be moved/rotated/scaled but otherwise can’t be modified, whereas objects from the Prefabs folder can be modified and added to.
 
@@ -123,17 +127,21 @@ Now your scene should look something similar to this:
 
 ![image alt text](ReadmeImages/image_10.png)
 
-Let’s make sure to save our new scene (Ctrl+S or File > Save Scene) so that we can run our lightmapper.
+Let’s make sure to save our new scene (Ctrl+S or *File > Save Scene*) so that we can run our lightmapper.
 
-Select *Window > Lighting > Settings* from the Unity menu bar. The Set Up Lighting command we ran at the start already configured our light settings, so all we need to do is hit Generate Lighting at the bottom right. This might take a few minutes depending on your computer, but at the end you should be rewarded with something like this:
+Select *Window > Lighting > Settings* from the Unity menu bar. The Set Up Lighting command we ran at the start already configured our light settings, so all we need to do is hit Generate Lighting at the bottom right. This can take quite a while, depending on your computer, but at the end you should be rewarded with something like this:
 
 ![image alt text](ReadmeImages/image_11.png)
 
-The final step is to set up the preview camera. In your Scene View using WSAD move your viewport to get a good view of your map. Then select the Main Camera object in the Scene Hierarchy and select *GameObject > Align With View* so that the camera matches what you see in the Scene viewport.
+Please check **Lightmap Settings** at the end of the readme for how to make your lightmaps exportable.
 
-Now we’re ready to test. To create your .level file select Marble It Up > Level Baker. This will open up a new window with a "Bake" button. Press that and voilà! A level file has been created in your Assets folder.
+Keep in mind that lightmaps are not necessary to export or publish your level, and it is sometimes best to *thoroughly* test your level before generating lightmaps as any changes in level geometry will require lightmaps to be regenerated.
 
-To test it out, we’ll need to launch *Marble It Up!* on Steam in Level Testing mode. Open that up, select Load Map, and select the newly created .level file (which is named the same as your saved scene name).
+The final step is to set up the preview camera. In your Scene View using WASD move your viewport to get a good view of your map. Then select the Main Camera object in the Scene Hierarchy and select *GameObject > Align With View* so that the camera matches what you see in the Scene viewport.
+
+Now we’re ready to test. To create your .level file, click the *Export* button under the *Level Export* section of the Level Kit window, and voilà! A level file has been created in your Assets folder.
+
+To test it out, we’ll need to launch *Marble It Up!* on Steam in Level Testing mode. The dialog asking if you want to open the level tester only appears when launched from the Steam library window. Open that up, select Load Map, and select the newly created .level file (which is named the same as your saved scene name).
 
 If everything works as intended you should be rewarded with a view of your custom map:
 
@@ -183,7 +191,7 @@ To create a new spline, create an empty GameObject and add the Spline Drawer com
 
 ## Basher
 
-The Basher prefab is a special Moving Platform used to knock mables off the map. To maintain consistency with other maps, the best practice is to only modify the Delta value of the Elevator Mover component and object’s position and rotation.
+The Basher prefab is a special Moving Platform used to knock marbles off the map. To maintain consistency with other maps, the best practice is to only modify the Delta value of the Elevator Mover component and object’s position and rotation.
 <a name="surfaces"/>
 # **Special Surfaces**
 
@@ -191,7 +199,7 @@ The Basher prefab is a special Moving Platform used to knock mables off the map.
 
 *surface.lowfriction* - This is the Ice surface: anywhere this material is used will cause the marble to slide around. This surface is straightforward in use and does not need any special consideration.
 
-*surface.gravity* - This is the Gravity surface: anywhere this material is used will cause gravity to shift, such that the surface area touched is facing upward. The actual implementation of this surface gives some leniency to ‘touch’ and thus the area affected while in contact is larger than the actual contact area. For this reason it is highly suggested not to use this material on small objects with complex surfaces over a small area as gravity is likely to rapidly shift as the game tries to determine which way should be up based on many different points.
+*surface.gravity* - This is the Gravity surface: anywhere this material is used will cause gravity to shift, such that the surface area touched is facing upward. The actual implementation of this surface gives some leniency to ‘touch’ and thus the area affected while in contact is larger than the actual contact area. For this reason, it is highly suggested not to use this material on small objects with complex surfaces over a small area as gravity is likely to rapidly shift as the game tries to determine which way should be up based on many different points.
 
 *Lava.crush* - Instantly kills marble on contact. This is a sub-surface of the Crusher object in official levels but can be used as a normal surface as well.
 
@@ -199,13 +207,13 @@ The Basher prefab is a special Moving Platform used to knock mables off the map.
 
 # Lightmap Settings
 
-The level file format allows encoding of lightmaps to add fantastic visual fidelity to custom levels. With this feature comes the possibility for extremely large file sizes if not properly checked. Due to this the MIU Level Kit will enforce lightmap texture compression, ensuring that level files are as small as possible. Due to some engine limitations, this process can't be completely automated and will require some tweaking to get working correctly. This section is meant to explain what compression type the Level Kit requires and how to achieve it.
+The level file format allows encoding of lightmaps to add fantastic visual fidelity to custom levels. With this feature comes the possibility for extremely large file sizes if not properly checked. Due to this, the MIU Level Kit will enforce lightmap texture compression, ensuring that level files are as small as possible. Due to some engine limitations, this process can't be completely automated and will require some tweaking to get working correctly. This section is meant to explain what compression type the Level Kit requires and how to achieve it.
 
-If your lightmap settings have been configured correctly, when you generate lighting for a level you should have two new textures - a Lightmap and a Shadowmap. Lightmaps create the color values of the lighting, and the shadowmap acts as a mask, telling the lighting where to use the lightmap texture on the geometry. These two textures need different features (Lightmap needs transparency values). Due to this we have found that the best 'small footprint' textures to use that are *Unity Version Independent* are **DTX5 Compressed** for Lightmap and **DTX1 Compressed** for Shadowmap, both with Crunch compression enabled.
+If your lightmap settings have been configured correctly, when you generate lighting for a level you should have two new textures - a Lightmap and a Shadowmap. Lightmaps create the color values of the lighting, and the shadowmap acts as a mask, telling the lighting where to use the lightmap texture on the geometry. These two textures need different features (Lightmap needs transparency values). Due to this we have found that the best 'small footprint' textures to use that are *Unity Version Independent* are **DXT5 Crunched** for Lightmap and **DXT1 Crunched** for Shadowmap.
 
 ![image alt text](ReadmeImages/image_14.png)
 
-The image above shows how to achieve this texture compression setting in Unity 2017.3 but there may be differences in newer/older Unity versions. The important thing is to get DTX1/DTX5 Compressed format to show at the bottom of the texture preview image. Without these compression settings your level will fail to export.
+The image above shows how to achieve this texture compression setting in the light map inspector window. Click the down arrow button and click the Override checkbox. The main setting you need to change is in the "Format" menu. The important thing is to get DXT1/DXT5 Crunched format to show at the bottom of the texture preview image. Without these compression settings, your level will fail to export.
 
 ## Lightmaps with Imported Models
 
